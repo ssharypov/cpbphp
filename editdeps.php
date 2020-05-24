@@ -1,23 +1,18 @@
-<?php
-    $query = "SELECT * FROM departments ORDER BY depsort ASC";
-    $result = mysqli_query($dblink,$query);
-?>
 <h1>Редактор подразделений</h1>
 <fieldset>
     <legend>Добавить новое подразделение...</legend>
     <form action="admin.php?section=editdeps" method="post">
         <input type="text" name="depname" value="название подразделения">
         <?php
-            if(mysqli_num_rows($result)>0) {
+            if($dep_counts>0) {
         ?>
         и отобразить 
         <select name="depsort" id="">
-            <option value="<?=(mysqli_num_rows($result)+1);?>" selected>В конце списка</option>
+            <option value="<?=$dep_counts+1;?>" selected>В конце списка</option>
             <?php
-            while($row=mysqli_fetch_row($result)) {
-                echo "<option value=\"$row[0]\">после $row[1]</option>\n\t\t\t";
-                $max=$row[0];
-            };
+            foreach($deps as $dep) {
+                echo "<option value=\"$dep[0]\">после $dep[1]</option>\n\t\t\t";
+            }
             ?>
         </select>
         <?php
@@ -29,6 +24,7 @@
         ?>
         <input type="submit" name="adddepok" value="OK">
     </form>
+    <a href="admin.php?section=editcontacts">Редактировать контакты</a>
 </fieldset>
 
 <form action="admin.php?section=editdeps" method="post">
@@ -41,18 +37,17 @@
         </thead>
         <tbody>
             <?php
-            mysqli_data_seek($result,0);
-            while($row=mysqli_fetch_row($result)) {
+            foreach($deps as $dep) {
                 echo "<tr>";
-                echo "<td>".$row[1]."</td>";
+                echo "<td>".$dep[1]."</td>";
                 echo "<td>";
-                echo "<input type=\"submit\" name=\"moveup[$row[0]]\" value=\"Вверх\">";
-                echo "<input type=\"submit\" name=\"movedown[$row[0]]\" value=\"Вниз\">";
-                echo "<input type=\"submit\" name=\"change[$row[0]]\" value=\"Изменить\">";
-                echo "<input type=\"submit\" name=\"delete[$row[0]]\" value=\"Удалить\">";
+                echo "<input type=\"submit\" name=\"depmoveup[$dep[0]]\" value=\"Вверх\">";
+                echo "<input type=\"submit\" name=\"depmovedown[$dep[0]]\" value=\"Вниз\">";
+                echo "<input type=\"submit\" name=\"depchange[$dep[0]]\" value=\"Изменить\">";
+                echo "<input type=\"submit\" name=\"depdelete[$dep[0]]\" value=\"Удалить\">";
                 echo "</td>";
                 echo "</tr>\n";
-            }
+            };
             ?>
         </tbody>
         <tfoot>
