@@ -46,22 +46,23 @@ if($contactchange) {
     } else {
     ?>
     <form action="admin.php?section=editcontacts" method="post">
-        <table border="0">
+        <table border="0" style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 12px">
             <tr>
-                <td>
+                <td align="right">
+                    ФИО сотрудника или рабочее место
                     <?php
                     if(isset($fio)) {
                     ?>
-                    <input type="text" name="fio" value="<?=$fio;?>">
+                    <input autocomplete="off" type="text" name="fio" value="<?=$fio;?>">
                     <?php
                     } else {
                     ?>
-                    <input type="text" name="fio" value="ФИО / название контакта">
+                    <input autocomplete="off" type="text" name="fio" value="">
                     <?php 
                     }
                     ?>
                 </td>
-                <td>
+                <td align="right">
                     его должность
                     <?php
                     if(isset($fio)) {
@@ -70,12 +71,12 @@ if($contactchange) {
                     <?php
                     } else {
                     ?>
-                    <input type="text" name="post" value="здесь указать должность">
+                    <input type="text" name="post" value="">
                     <?php 
                     }
                     ?>
                 </td>
-                <td>
+                <td align="right">
                     в следующее подразделение
                     <select name="depid" id="" onchange="this.form.submit()">
                     <option value="0">-- не выбрано --</option>
@@ -96,15 +97,15 @@ if($contactchange) {
                 </td>
             </tr>
             <tr>
-                <td>
+                <td align="right">
                     вн. тел.
-                    <input type="text" name="intnum">
+                    <input autocomplete="off" type="text" name="intnum" value="<?=@$intnum;?>">
                 </td>
-                <td>
+                <td align="right">
                     др.  тел.
-                    <input type="text" name = "extnum">
+                    <input autocomplete="off" type="text" name="extnum" value="<?=@$extnum;?>">
                 </td>
-                <td>
+                <td align="right">
                     и отобразить
                     <select name="contactsort" id="">
                         <option value="<?php echo ($contact_counts+1);?>">В конце списка</option>
@@ -135,29 +136,31 @@ if($contactchange) {
             <tr>
                 <th>Сотрудник</th>
                 <th>Должность</th>
-                <th>Внутренние номера</th>
+                <th>Внутренние<br>номера</th>
                 <th>Сотовые / городские номера</th>
                 <th>Действия</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            foreach($deps as $dep) {
-                echo "<tr><td colspan=\"5\" class=\"depname\">$dep[1]</td></tr>";
-                $contacts = contact_list($dep[0]);
-                foreach($contacts as $contact) {
-                    echo "<tr>";
-                    echo "<td>$contact[1]</td>";
-                    echo "<td>$contact[2]</td>";
-                    echo "<td>$contact[3]</td>";
-                    echo "<td>$contact[4]</td>";
-                    echo "<td style=\"text-align: center\">";
-                    if($contact !== reset($contacts)) echo "<input type=\"submit\" name=\"contactmoveup[$contact[0]]\" value=\"Вверх\">";
-                    if($contact !== end($contacts)) echo "<input type=\"submit\" name=\"contactmovedown[$contact[0]]\" value=\"Вниз\">";
-                    echo "<input type=\"submit\" name=\"contactchange[$contact[0]]\" value=\"Изменить\">";
-                    echo "<input type=\"submit\" name=\"contactdelete[$contact[0]]\" value=\"Удалить\">";
-                    echo "</td>";
-                    echo "</tr>\n";
+            if(!empty($deps)) {
+                foreach($deps as $dep) {
+                    echo "<tr><td colspan=\"5\" class=\"depname\">$dep[1]</td></tr>";
+                    $contacts = contact_list($dep[0]);
+                    foreach($contacts as $contact) {
+                        echo "<tr>";
+                        echo "<td>$contact[1]</td>";
+                        echo "<td>$contact[2]</td>";
+                        echo "<td>$contact[3]</td>";
+                        echo "<td>$contact[4]</td>";
+                        echo "<td style=\"text-align: center\">";
+                        if($contact !== reset($contacts)) echo "<input type=\"submit\" name=\"contactmoveup[$contact[0]]\" value=\"&uarr;\">";
+                        if($contact !== end($contacts)) echo "<input type=\"submit\" name=\"contactmovedown[$contact[0]]\" value=\"&darr;\">";
+                        echo "<input type=\"submit\" name=\"contactchange[$contact[0]]\" value=\"&#9998;\">";
+                        echo "<input type=\"submit\" name=\"contactdelete[$contact[0]]\" value=\"&#10007;\">";
+                        echo "</td>";
+                        echo "</tr>\n";
+                    }
                 }
             }
             ?>

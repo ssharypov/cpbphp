@@ -9,13 +9,15 @@
 }
 #contact-table th {
     font-family: Geneva, Verdana, sans-serif;
-    background-color: cadetblue;
+    background-color: #5e5e5e;
+    color: whitesmoke;
+    padding: 5px;
 }
 #contact-table td.depname {
     text-align: center;
     padding: 3px 5px;
     font-family: Geneva, Verdana, sans-serif;
-    background-color: lightsteelblue;
+    background-color: #ace;
 }
 div#edit-screen {
     position: fixed;
@@ -47,4 +49,14 @@ div#edit-screen form input {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     display: block;
     text-align: center;
+}
+fieldset {
+    background: #ccc;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+legend {
+    background: #ccc;
+    border: 1px solid black;
+    border-radius: 5px;
 }
