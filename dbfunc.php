@@ -47,6 +47,45 @@ function dep_add($depname,$depsort) {
     }
 }
 
+function dep_moveup($depid) {
+    global $dblink;
+    $query = "SELECT depsort-1 FROM departments WHERE depid=$depid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    $ltdepsort = $row[0];
+    $curdepsort=($ltdepsort+1);
+    $query = "UPDATE departments SET depsort=$curdepsort WHERE depsort=$ltdepsort";
+    mysqli_query($dblink,$query);
+    $query = "UPDATE departments SET depsort=$ltdepsort WHERE depid=$depid";
+    mysqli_query($dblink,$query);
+}
+
+function dep_movedown($depid) {
+    global $dblink;
+    $query = "SELECT depsort+1 FROM departments WHERE depid=$depid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    $ltdepsort = $row[0];
+    $curdepsort=($ltdepsort-1);
+    $query = "UPDATE departments SET depsort=$curdepsort WHERE depsort=$ltdepsort";
+    mysqli_query($dblink,$query);
+    $query = "UPDATE departments SET depsort=$ltdepsort WHERE depid=$depid";
+    mysqli_query($dblink,$query);
+}
+
+function dep_get_record($depid) {
+    global $dblink;
+    $query = "SELECT * FROM departments WHERE depid=$depid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    return $row;
+}
+function dep_change_name($depid,$depname) {
+    global $dblink;
+    $query = "UPDATE departments SET depname='$depname' WHERE depid=$depid";
+    mysqli_query($dblink,$query);
+}
+
 /**
  * Работа с контактами
  */
@@ -68,7 +107,7 @@ function contact_sort_max($depid) {
 
 function contact_list($depid) {
     global $dblink;
-    $query = "SELECT * FROM contacts WHERE depid=$depid ORDER BY contactsort ASC";
+    $query = "SELECT * FROM contacts WHERE depid=$depid ORDER BY contactsort, fio ASC";
     $result = mysqli_query($dblink,$query);
     $deps = array();
     while($row=mysqli_fetch_row($result)) {

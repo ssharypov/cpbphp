@@ -1,3 +1,19 @@
+<?php
+if($depchange) {
+?>
+<div id="edit-screen">
+    <h1></h1>
+    <form action="admin.php?section=editdeps" method="post">
+        Изменить название подразделения <br><br>
+        <input type="text" name="depname" value="<?=$department[1];?>"><br><br>
+        <input type="hidden" name="depid" value=<?=$department[0];?>>
+        <input type="submit" name="depeditok" value="OK"><br>
+        <input type="submit" name="depeditcancel" value="CANCEL">
+    </form>
+</div>
+<?php
+}
+?>
 <h1>Редактор подразделений</h1>
 <fieldset>
     <legend>Добавить новое подразделение...</legend>
@@ -41,8 +57,8 @@
                 echo "<tr>";
                 echo "<td>".$dep[1]."</td>";
                 echo "<td>";
-                echo "<input type=\"submit\" name=\"depmoveup[$dep[0]]\" value=\"Вверх\">";
-                echo "<input type=\"submit\" name=\"depmovedown[$dep[0]]\" value=\"Вниз\">";
+                if($dep !== reset($deps)) echo "<input type=\"submit\" name=\"depmoveup[$dep[0]]\" value=\"Вверх\">";
+                if($dep !== end($deps)) echo "<input type=\"submit\" name=\"depmovedown[$dep[0]]\" value=\"Вниз\">";
                 echo "<input type=\"submit\" name=\"depchange[$dep[0]]\" value=\"Изменить\">";
                 echo "<input type=\"submit\" name=\"depdelete[$dep[0]]\" value=\"Удалить\">";
                 echo "</td>";

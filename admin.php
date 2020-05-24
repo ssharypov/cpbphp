@@ -2,23 +2,47 @@
     require_once "config.php";
     require_once "dbfunc.php";
     /** Работа с подразделениями */
+    /** Добавление */
     if(isset($_POST['adddepok']) && $_POST['adddepok']=="OK" && $_SERVER['REQUEST_URI']=='/admin.php?section=editdeps') {
         if(!empty($_POST['depname']) && is_numeric($_POST['depsort'])) {
             echo "OK";
             dep_add($_POST['depname'],$_POST['depsort']);
+            header("Location: /admin.php?section=editdeps");
         }
     }
+    /** Изменение */
     if(isset($_POST['depmoveup'])) {
-        echo var_dump($_POST['depmoveup'])."<br>";
-        echo key($_POST['depmoveup']);
+        $depid=key($_POST['depmoveup']);
+        dep_moveup($depid);
+        header("Location: /admin.php?section=editdeps");
     };
     if(isset($_POST['depmovedown'])) {
-        echo var_dump($_POST['depmovedown'])."<br>";
-        echo key($_POST['depmovedown']);
+        $depid=key($_POST['depmovedown']);
+        dep_movedown($depid);
+        header("Location: /admin.php?section=editdeps");
     };
+    $depchange = false;
     if(isset($_POST['depchange'])) {
-        echo var_dump($_POST['depchange'])."<br>";
-        echo key($_POST['depchange']);
+        $depchange=true;
+        $depid=key($_POST['depchange']);
+        $department=dep_get_record($depid);
+    };
+    if(isset($_POST['depeditok'])) {
+        if(!empty($_POST['depname']) && !empty($_POST['depid'])) {
+            $depid=$_POST['depid'];
+            $depname=$_POST['depname'];
+            dep_change_name($depid,$depname);
+            header("Location: /admin.php?section=editdeps");
+        }
+    }
+    if(isset($_POST['depeditcancel'])) {
+        header("Location: /admin.php?section=editdeps");
+    }
+    $depdelete = false;
+    if(isset($_POST['depdelete'])) {
+        $depdelete=true;
+        $depid=key($_POST['depdelete']);
+        dep_delete($depid);
     };
     if(isset($_POST['depdelete'])) {
         echo var_dump($_POST['depdelete'])."<br>";
@@ -73,10 +97,11 @@
             }
         }
     ?>
-    <?php 
+    <?php /*
     echo "<pre>";
     echo var_dump($_POST);
-    echo "</pre>";
+    echo $depchange;
+    echo "</pre>";*/
     ?>
 </body>
 </html>
