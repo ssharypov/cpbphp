@@ -86,6 +86,21 @@ function dep_change_name($depid,$depname) {
     mysqli_query($dblink,$query);
 }
 
+function dep_not_empty($depid) {
+    global $dblink;
+    $query = "SELECT COUNT(contactid) FROM contacts WHERE depid=$depid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    if($row[0]>0) return true;
+    else return false;
+}
+
+function dep_delete($depid) {
+    global $dblink;
+    $query = "DELETE FROM departments WHERE depid=$depid";
+    mysqli_query($dblink,$query);
+    echo mysqli_error($dblink);
+}
 /**
  * Работа с контактами
  */
@@ -132,4 +147,55 @@ function contact_add($fio,$post,$intnum,$extnum,$depid,$contactsort) {
         $query = "INSERT INTO contacts(fio,post,intnum,extnum,depid,contactsort) VALUES('$fio','$post','$intnum','$extnum',$depid,$contactsort)";
         mysqli_query($dblink,$query);
     }
+}
+
+function contact_moveup($contactid) {
+    global $dblink;
+    $query = "SELECT contactsort-1,depid FROM contacts WHERE contactid=$contactid";
+    echo $query;
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    $ltcontactsort = $row[0];
+    $depid = $row[1];
+    $curcontactsort=($ltcontactsort+1);
+    $query = "UPDATE contacts SET contactsort=$curcontactsort WHERE contactsort=$ltcontactsort AND depid=$depid";
+    echo $query;
+    mysqli_query($dblink,$query);
+    $query = "UPDATE contacts SET contactsort=$ltcontactsort WHERE contactid=$contactid AND depid=$depid";
+    echo $query;
+    mysqli_query($dblink,$query);
+}
+function contact_movedown($contactid) {
+    global $dblink;
+    $query = "SELECT contactsort+1,depid FROM contacts WHERE contactid=$contactid";
+    echo $query;
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    $ltcontactsort = $row[0];
+    $depid = $row[1];
+    $curcontactsort=($ltcontactsort-1);
+    $query = "UPDATE contacts SET contactsort=$curcontactsort WHERE contactsort=$ltcontactsort AND depid=$depid";
+    echo $query;
+    mysqli_query($dblink,$query);
+    $query = "UPDATE contacts SET contactsort=$ltcontactsort WHERE contactid=$contactid AND depid=$depid";
+    echo $query;
+    mysqli_query($dblink,$query);
+}
+function contact_get_record($contactid) {
+    global $dblink;
+    $query = "SELECT * FROM contacts WHERE contactid=$contactid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    return $row;
+}
+function contact_change($contactid,$fio,$post,$intnum,$extnum,$depid) {
+    global $dblink;
+    $query = "UPDATE contacts SET fio='$fio', post='$post', intnum='$intnum', extnum='$extnum', depid=$depid WHERE contactid=$contactid";
+    mysqli_query($dblink,$query);
+}
+
+function contact_delete($contactid) {
+    global $dblink;
+    $query = "DELETE FROM contacts WHERE contactid=$contactid";
+    mysqli_query($dblink,$query);
 }

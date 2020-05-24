@@ -31,7 +31,9 @@ div#edit-screen {
 div#edit-screen form{
     padding: 50px;
     background: #ccc;
-    position: fixed; top: 20%; left: 50%;
+    position: fixed; 
+    top: 300px; 
+    left: 50%;
     -webkit-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -39,4 +41,10 @@ div#edit-screen form{
 div#edit-screen form input {
     text-align: center;
     width: 300px;
+}
+.alertmsg {
+    color: red;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display: block;
+    text-align: center;
 }

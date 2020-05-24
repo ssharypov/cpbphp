@@ -1,6 +1,9 @@
 <?php
     require_once "config.php";
     require_once "dbfunc.php";
+    $depchange = false;
+    $contactchange = false;
+    $alertmsg = "";
     /** Работа с подразделениями */
     /** Добавление */
     if(isset($_POST['adddepok']) && $_POST['adddepok']=="OK" && $_SERVER['REQUEST_URI']=='/admin.php?section=editdeps') {
@@ -21,7 +24,6 @@
         dep_movedown($depid);
         header("Location: /admin.php?section=editdeps");
     };
-    $depchange = false;
     if(isset($_POST['depchange'])) {
         $depchange=true;
         $depid=key($_POST['depchange']);
@@ -38,15 +40,14 @@
     if(isset($_POST['depeditcancel'])) {
         header("Location: /admin.php?section=editdeps");
     }
-    $depdelete = false;
     if(isset($_POST['depdelete'])) {
-        $depdelete=true;
         $depid=key($_POST['depdelete']);
-        dep_delete($depid);
-    };
-    if(isset($_POST['depdelete'])) {
-        echo var_dump($_POST['depdelete'])."<br>";
-        echo key($_POST['depdelete']);
+        if(dep_not_empty($depid)) {
+            $alertmsg = "<span class=\"alertmsg\">Подразделение не пусто</span>";
+        } else {
+            dep_delete($depid);
+            header("Location: /admin.php?section=editdeps");
+        };
     };
     /** Работа с контактами */
     /** Добавление */
@@ -60,14 +61,53 @@
             $depid = $_POST['depid'];
             $contactsort = $_POST['contactsort'];
             contact_add($fio,$post,$intnum,$extnum,$depid,$contactsort);
-            //header("Location: /admin.php?section=editcontacts");
+            header("Location: /admin.php?section=editcontacts");
         }
     }
+    /** Изменение */
+    if(isset($_POST['contactmoveup'])) {
+        $contact=key($_POST['contactmoveup']);
+        echo $contact;
+        contact_moveup($contact);
+        header("Location: /admin.php?section=editcontacts");
+    };
+    if(isset($_POST['contactmovedown'])) {
+        $contact=key($_POST['contactmovedown']);
+        echo $contact;
+        contact_movedown($contact);
+        header("Location: /admin.php?section=editcontacts");
+    };
+
+    if(isset($_POST['contactchange'])) {
+        $contactchange=true;
+        $contactid=key($_POST['contactchange']);
+        $contact=contact_get_record($contactid);
+    };
+    if(isset($_POST['contacteditok'])) {
+        if(!empty($_POST['fio']) && !empty($_POST['contactid']) && !empty($_POST['post'])) {
+            $contactid=$_POST['contactid'];
+            $depid=$_POST['depid'];
+            $fio=$_POST['fio'];
+            $post=$_POST['post'];
+            $intnum = (empty($_POST['intnum'])) ? '' : $_POST['intnum'];
+            $extnum = (empty($_POST['extnum'])) ? '' : $_POST['extnum'];
+            contact_change($contactid,$fio,$post,$intnum,$extnum,$depid);
+            header("Location: /admin.php?section=editcontacts");
+        }
+    }
+    if(isset($_POST['depeditcancel'])) {
+        header("Location: /admin.php?section=editcontacts");
+    }
+    if(isset($_POST['contactdelete'])) {
+        $contactid=key($_POST['contactdelete']);
+        contact_delete($contactid);
+        header("Location: /admin.php?section=editcontacts");
+    };
     /** Фильтрация */
-    if(!isset($_POST['contactok']) && $_SERVER['REQUEST_URI']=="/admin.php?section=editcontacts" && isset($_POST['depid'])) {
+    if(!isset($_POST['contacteditok']) && !isset($_POST['contacteditcancel']) && !isset($_POST['contactok']) && $_SERVER['REQUEST_URI']=="/admin.php?section=editcontacts" && isset($_POST['depid'])) {
         $fio = $_POST['fio'];
         $post = $_POST['post'];
-        $intnum = (empty($_POST['intnum'])) ? '' : $_POST['innum'];
+        $intnum = (empty($_POST['intnum'])) ? '' : $_POST['intnum'];
         $extnum = (empty($_POST['extnum'])) ? '' : $_POST['extnum'];
         $depid = $_POST['depid'];
         $contactsort = $_POST['contactsort'];
@@ -97,11 +137,11 @@
             }
         }
     ?>
-    <?php /*
+    <?php 
     echo "<pre>";
     echo var_dump($_POST);
     echo $depchange;
-    echo "</pre>";*/
+    echo "</pre>";
     ?>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <?php
+echo $alertmsg;
 if($depchange) {
 ?>
 <div id="edit-screen">
