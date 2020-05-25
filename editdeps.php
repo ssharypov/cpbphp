@@ -19,7 +19,8 @@ if($depchange) {
 <fieldset>
     <legend>Добавить новое подразделение...</legend>
     <form action="admin.php?section=editdeps" method="post">
-        <input type="text" name="depname" value="название подразделения">
+        Название подразделения
+        <input type="text" name="depname" value="">
         <?php
             if($dep_counts>0) {
         ?>
