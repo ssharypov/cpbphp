@@ -137,11 +137,11 @@
             }
         }
     ?>
-    <?php /*
+    <?php 
     echo "<pre>";
     echo var_dump($_POST);
     echo $depchange;
-    echo "</pre>";*/
+    echo "</pre>";
     ?>
 </body>
 </html>
