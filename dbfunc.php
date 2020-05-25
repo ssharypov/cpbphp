@@ -101,6 +101,7 @@ function dep_delete($depid) {
     mysqli_query($dblink,$query);
     echo mysqli_error($dblink);
 }
+
 /**
  * Работа с контактами
  */
@@ -165,6 +166,7 @@ function contact_moveup($contactid) {
     echo $query;
     mysqli_query($dblink,$query);
 }
+
 function contact_movedown($contactid) {
     global $dblink;
     $query = "SELECT contactsort+1,depid FROM contacts WHERE contactid=$contactid";
@@ -181,6 +183,7 @@ function contact_movedown($contactid) {
     echo $query;
     mysqli_query($dblink,$query);
 }
+
 function contact_get_record($contactid) {
     global $dblink;
     $query = "SELECT * FROM contacts WHERE contactid=$contactid";
@@ -188,10 +191,25 @@ function contact_get_record($contactid) {
     $row = mysqli_fetch_row($result);
     return $row;
 }
+
 function contact_change($contactid,$fio,$post,$intnum,$extnum,$depid) {
     global $dblink;
-    $query = "UPDATE contacts SET fio='$fio', post='$post', intnum='$intnum', extnum='$extnum', depid=$depid WHERE contactid=$contactid";
-    mysqli_query($dblink,$query);
+    /** На всякий случай проверяем текущий depid Текущего контакта */
+    $query = "SELECT depid FROM contacts WHERE contactid=$contactid";
+    $result = mysqli_query($dblink,$query);
+    $row = mysqli_fetch_row($result);
+    /** Если подразделение меняется, то нужно перенести и поставить его последним в списке, как новый контакт */
+    if($depid!=$row[0]) {
+        $query = "SELECT MAX(contactsort) FROM contacts WHERE depid=$depid";
+        $result = mysqli_query($dblink,$query);
+        $row = mysqli_fetch_row($result);
+        $contactsort = $row[0] + 1;
+        $query = "UPDATE contacts SET fio='$fio', post='$post', intnum='$intnum', extnum='$extnum', depid=$depid, contactsort=$contactsort WHERE contactid=$contactid";
+        mysqli_query($dblink,$query);
+    } else {
+        $query = "UPDATE contacts SET fio='$fio', post='$post', intnum='$intnum', extnum='$extnum', depid=$depid WHERE contactid=$contactid";
+        mysqli_query($dblink,$query);
+    }
 }
 
 function contact_delete($contactid) {

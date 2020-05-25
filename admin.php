@@ -95,7 +95,7 @@
             header("Location: /admin.php?section=editcontacts");
         }
     }
-    if(isset($_POST['depeditcancel'])) {
+    if(isset($_POST['contacteditcancel'])) {
         header("Location: /admin.php?section=editcontacts");
     }
     if(isset($_POST['contactdelete'])) {
